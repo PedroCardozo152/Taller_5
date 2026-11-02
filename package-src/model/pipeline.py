@@ -1,35 +1,34 @@
-from feature_engine.selection import DropFeatures
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 
 from model.config.core import config
-from model.processing import features as pp
+
+
+categorical_features = ["Gender"]
+
+numeric_features = [
+    feature
+    for feature in config.model_config.features
+    if feature not in categorical_features
+]
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("numeric", MinMaxScaler(), numeric_features),
+        ("categorical", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+    ]
+)
 
 abandono_pipe = Pipeline(
     [
-        # Drop features 
-        #("drop_features", 
-        # DropFeatures(
-        #     features_to_drop=[config.model_config.temp_features]
-        #     )
-        #),
-        # Mappers
-        #(
-        #    "mapper_qual",
-        #    pp.Mapper(
-        #        variables=config.model_config.qual_vars,
-        #        mappings=config.model_config.qual_mappings,
-        #    ),
-        #),
-        # Scaler
-        ("scaler", MinMaxScaler()
-         ),
-        # Random forest 
-        ("Random Forest",
+        ("preprocessor", preprocessor),
+        (
+            "Random Forest",
             RandomForestClassifier(
-                n_estimators = config.model_config.n_estimators, 
-                max_depth = config.model_config.max_depth,
+                n_estimators=config.model_config.n_estimators,
+                max_depth=config.model_config.max_depth,
                 random_state=config.model_config.random_state,
             ),
         ),

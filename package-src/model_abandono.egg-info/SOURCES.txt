@@ -17,7 +17,7 @@ model/processing/data_manager.py
 model/processing/features.py
 model/processing/validation.py
 model/trained/__init__.py
-model/trained/modelo-abandono-output0.0.1.pkl
+model/trained/modelo-abandono-output0.0.2.pkl
 model_abandono.egg-info/PKG-INFO
 model_abandono.egg-info/SOURCES.txt
 model_abandono.egg-info/dependency_links.txt
